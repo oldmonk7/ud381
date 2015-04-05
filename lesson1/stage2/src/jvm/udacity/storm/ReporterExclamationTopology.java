@@ -19,6 +19,7 @@ import java.util.Map;
 //********* ADDED 1-of-4 imported http://mvnrepository.com/artifact/com.lambdaworks/lettuce/
 import com.lambdaworks.redis.RedisClient;
 import com.lambdaworks.redis.RedisConnection;
+import udacity.storm.spout.RandomSentenceSpout;
 
 // COPY AND PASE: following code into pom.xml file (located lesson1/stage1/pom.xml)
 //<dependency>
@@ -117,10 +118,12 @@ public class ReporterExclamationTopology {
 
     //********* BEGIN stage2 exercise part 2-of-2 ***********
     // attach the word spout to the topology - parallelism of 10
-    builder.setSpout("word", new TestWordSpout(), 10);
+    //builder.setSpout("word", new TestWordSpout(), 10);
+
+    builder.setSpout("rand-sentence", new RandomSentenceSpout(), 10);
 
     // attach the exclamation bolt to the topology - parallelism of 3
-    builder.setBolt("exclaim1", new ExclamationBolt(), 3).shuffleGrouping("word");
+    builder.setBolt("exclaim1", new ExclamationBolt(), 3).shuffleGrouping("rand-sentence");
 
     // attach another exclamation bolt to the topology - parallelism of 2
     builder.setBolt("exclaim2", new ExclamationBolt(), 2).shuffleGrouping("exclaim1");
