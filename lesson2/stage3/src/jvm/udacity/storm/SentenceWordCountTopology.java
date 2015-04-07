@@ -142,7 +142,7 @@ public class SentenceWordCountTopology {
 
       String[] tokens = sentence.split(delims);
 
-      for(String token in tokens){
+      for(String token : tokens){
         collector.emit(new Values(token));
       }
 
@@ -180,7 +180,7 @@ public class SentenceWordCountTopology {
       //BEGIN YOUR CODE - part 1b
       //uncomment line below to declare output
 
-      outputFieldsDeclarer.declare(new Fields("word"));
+      outputFieldsDeclarer.declare(new Fields("sentence-word"));
 
       //END YOUR CODE
       //****************************************************
@@ -319,11 +319,11 @@ public class SentenceWordCountTopology {
     builder.setSpout("sentence-spout", new RandomSentenceSpout(), 1);
 
     //attach the tokenizer to countbolt
-    builder.setBolt("sentence-to-words", new SplitSentenceBolt(), 10)
-    .fieldsGrouping("sentence-spout", new Fields("sentence"));
+    builder.setBolt("sentence-to-words-bolt", new SplitSentenceBolt(), 10)
+    .shuffleGrouping("sentence-spout");
 
     // attach the count bolt using fields grouping - parallelism of 15
-    builder.setBolt("count-bolt", new CountBolt(), 15).fieldsGrouping("sentence-to-words", new Fields("word"));
+    builder.setBolt("count-bolt", new CountBolt(), 15).fieldsGrouping("sentence-to-words-bolt", new Fields("sentence-word"));
 
     //***** END part 2-of-2 remove*************************************
 
