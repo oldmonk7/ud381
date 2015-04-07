@@ -124,6 +124,16 @@ public class WordCountTopology {
     @Override
     public void execute(Tuple tuple)
     {
+
+      String word = tuple.getString(0);
+
+      if(countMap.get(word) != null){
+        countMap.put(word, countMap.get(word) + 1); 
+      }
+      else{
+        countMap.put(word,1); 
+      }
+
       //**************************************************
       //BEGIN YOUR CODE - Part 1-of-3
       //Check if incoming word is in countMap.  If word does not
@@ -137,7 +147,7 @@ public class WordCountTopology {
 
       //After countMap is updated, emit word and count to output collector
       // Syntax to emit the word and count (uncomment to emit)
-      //collector.emit(new Values(word, countMap.get(word)));
+      collector.emit(new Values(word, countMap.get(word)));
 
       //END YOUR CODE Part 1-of-3
       //***************************************************
@@ -155,7 +165,7 @@ public class WordCountTopology {
       //BEGIN YOUR CODE - Part 2-of-3
       //uncomment line below to declare output
 
-      //outputFieldsDeclarer.declare(new Fields("word","count"));
+      outputFieldsDeclarer.declare(new Fields("word","count"));
 
       //END YOUR CODE - Part 2-of-3
       //****************************************************
@@ -217,7 +227,7 @@ public class WordCountTopology {
     //***************************************************
     // BEGIN YOUR CODE - Part 3-of-3
 
-
+    builder.setBolt("report-bolt", new ReportBolt(), 1).globalGrouping();
 
     // END YOUR CODE - Part 3-of-3
     //***************************************************
