@@ -327,7 +327,7 @@ static class SplitSentenceBolt extends BaseRichBolt{
 
       // submit the topology to the local cluster
       // name topology
-      cluster.submitTopology("sentence-word-count", conf, builder.createTopology());
+      cluster.submitTopology("sentence-count", conf, builder.createTopology());
 
       //**********************************************************************
       // let the topology run for 30 seconds. note topologies never terminate!
